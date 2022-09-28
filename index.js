@@ -5,6 +5,7 @@ class Room {
     this.rate = rate; // en cents
     this.discount = discount; //porcentaje
   }
+
   isOccupied(date) {
     // si la habitación no esta reservada en una fecha devuelve falso.
     // si la habitación esta ocupada devuelve verdadero
@@ -23,9 +24,10 @@ class Room {
 
   occupancyPercentage(startDate, endDate) {
     //devuelve el porcentaje de días ocupación entre el rango de fechas proporcionado.
+
     const dates = dateArray(startDate, endDate);
    
-    occupedDaysBooking = [];
+    const occupedDaysBooking = [];
     for (let date of dates) {
       if (this.isOccupied(date) === true) {
         occupedDaysBooking.push(date);
@@ -41,8 +43,8 @@ class Booking {
   constructor({ name, email, checkIn, checkOut, discount, room }) {
     this.name = name;
     this.email = email;
-    this.checkIn = new Date(checkIn); //date
-    this.checkOut = new Date(checkOut); //date
+    this.checkIn = checkIn; //date
+    this.checkOut = checkOut; //date
     this.discount = discount; //porcentaje
     this.room = room; //objeto {name:"canada", bookings:[booking1, booking2], rate:305, discount:20}
   }
@@ -89,6 +91,9 @@ function availableRooms(rooms, startDate, endDate) {
     return arrayAvailableRooms.length > 0 ? arrayAvailableRooms : "Total occupied rooms"
    
 
+  
+
 }
+
 
 module.exports = { Room, Booking, totalOccupancyPercentage, availableRooms };

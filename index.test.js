@@ -28,6 +28,14 @@ const bookingTemplate2 = {
     room:{},
 
 }
+const bookingTemplate3={
+    name: "Ana",
+    email: "ana@ana.com",
+    checkIn: new Date(2022, 12, 25),
+    checkOut: new Date(2022, 12, 30),
+    discount: 10,
+    room:{}, 
+}
     
 
 test("Room is occupied on date", ()=> {
@@ -51,4 +59,34 @@ test("occupancyPercentage", () => {
     expect(room1.occupancyPercentage(new Date(2022, 12, 11), new Date(2022, 12, 20))).toBe(0);
 })
 
+ test("totalFeee", () => {
+    const room1 = new Room({...roomTemplate})
+    const booking1 = new Booking({...bookingTemplate1, room: room1 });
+    room1.bookings=[booking1]
+    expect(booking1.getFee()).toBe(183000);
+ })
+
+ test('return totalOccupancyPercentage', () => {
+   const booking1 = new Booking({})
+   const booking2 = new Booking({})
+   const booking3 = new Booking({})
+   const room1 = new Room ({})
+   const room2= new Room({})
+
  
+
+    expect(totalOccupancyPercentage(rooms, new Date(''), new Date(''))).toBe();
+ })
+
+ test('Available Rooms', () => {
+   const booking1 = new Booking({})
+   const booking2 = new Booking({})
+   const booking3 = new Booking({})
+   const room1 = new Room ({})
+   const room2= new Room({})
+
+
+   expect(availableRooms(rooms, new Date(''), new Date(''))). toBe();
+
+ })
+
