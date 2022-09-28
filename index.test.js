@@ -7,8 +7,7 @@ const roomTemplate = {
     rate:305000,
     discount:20,
     bookings:[]
-    
-  
+
 
 }
 const bookingTemplate1 = {
@@ -72,9 +71,6 @@ test("occupancyPercentage", () => {
    const booking3 = new Booking({})
    const room1 = new Room ({})
    const room2= new Room({})
-
- 
-
     expect(totalOccupancyPercentage(rooms, new Date(''), new Date(''))).toBe();
  })
 
@@ -84,8 +80,6 @@ test("occupancyPercentage", () => {
    const booking3 = new Booking({})
    const room1 = new Room ({})
    const room2= new Room({})
-
-
    expect(availableRooms(rooms, new Date(''), new Date(''))). toBe();
 
  })

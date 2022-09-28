@@ -33,7 +33,7 @@ class Room {
         occupedDaysBooking.push(date);
       }
       //el total de días de ocupación * 100 entre el total de días entre las dos fechas
-      const percentageDays = (occupedDaysBooking.lenght/dates)*100;
+      const percentageDays = (occupedDaysBooking.lenght/dates.lenght)*100;
       return percentageDays;
     }
   }
