@@ -6,37 +6,53 @@ class Room {
     this.discount = discount; //porcentaje
   }
 
+
+ dateArray(startDate, endDate){
+       const date = new Date(startDate.getTime());
+       const dates = [];
+       while (date <= endDate){
+        dates.push(new Date(date));
+        date.setDate(date.getDate() + 1);
+       }
+       return dates;
+      }
+      // const d1 = new Date('2022-01-18');
+      // const d2 = new Date('2022-01-24')
+      // console.log(dateArray(d1, d2));
+
   isOccupied(date) {
     // si la habitación no esta reservada en una fecha devuelve falso.
     // si la habitación esta ocupada devuelve verdadero
 
     for (let i = 0; i <= this.bookings.length; i++) {
       const booked = this.bookings[i];
-      if (date >= booked.checkIn && date < booked.checkOut) {
-        
+      if (date >= booked.checkIn && date < booked.checkOut) { 
         return true;
-      }else {
-       
-        return false;
-      }
+      }  
+      return false; 
     }
-  }
+         
+  };
+  
 
   occupancyPercentage(startDate, endDate) {
     //devuelve el porcentaje de días ocupación entre el rango de fechas proporcionado.
 
-    const dates = dateArray(startDate, endDate);
+    const dates = this.dateArray(startDate, endDate);
    
     const occupedDaysBooking = [];
     for (let date of dates) {
       if (this.isOccupied(date) === true) {
         occupedDaysBooking.push(date);
+      }else{
+        return 0;
       }
-      //el total de días de ocupación * 100 entre el total de días entre las dos fechas
-      const percentageDays = (occupedDaysBooking.lenght/dates.lenght)*100;
-      return percentageDays;
+     
     }
-  }
+   //el total de días de ocupación * 100 entre el total de días entre las dos fechas
+   const percentageDays = (occupedDaysBooking.lenght/dates.lenght)*100;
+   return  percentageDays < 100 ? percentageDays : 100;
+ }
 }
 
 class Booking {
@@ -53,46 +69,36 @@ class Booking {
     const rate = this.room.rate;
     const discountRoom = rate * (this.room.discount / 100);
     const discountBooking = rate * (this.discount / 100);
+    const totalDiscounts = discountBooking + discountRoom;
     const totalRate = rate - discountBooking - discountRoom;
-
-    return totalRate;
+    
+    if (totalDiscounts > rate){
+      return "The discount is greter than rate"
+    }else{
+      return totalRate;
+    }
   }
 }
 
 function totalOccupancyPercentage(rooms, startDate, endDate) {
-  //devuelve el porcentaje de ocupación total de las habitaciones del array.
-
-  const arrayRoomsOccupacy = [];
-
-  for (let i = 0; i < rooms.lenght; i++) {
-    arrayRoomsOccupacy.push(rooms[i].occupancyPercentage(startDate, endDate));
+  //Devuelve el porcentaje de ocupación total de las habitaciones que incluyamos en el array
+  let totalOccupancy = 0;
+  for (let room of rooms) {
+    totalOccupancy +=
+      room.occupancyPercentage(startDate, endDate) / rooms.length;
   }
-
-  //sumar el array de habitaciones ocupadas
-  const totalRoomsOccupacy = arrayRoomsOccupacy.reduce(
-    (acc, roomsOccupacy) => acc + roomsOccupacy,
-    0
-  );
-
-  //calcular el porcentaje (habitaciones ocupadas/total habitaciones)
-  const totalPercentage = (totalRoomsOccupacy / rooms.lenght) * 100;
-
-  return Math.round(totalPercentage);
+  return Math.round(totalOccupancy);
 }
 
 function availableRooms(rooms, startDate, endDate) {
   //devuelve todas las habitaciones del array que NO están ocupadas entre las fechas
-    const dates = dateArray(startDate, endDate);
-    const arrayAvailableRooms = [];
-    for (let i = 0; i<rooms.lenght; i++ ){
-        if(rooms[i].isOccupied(dates) === false)
-        arrayAvailableRooms.push(rooms[i]);
+  const arrAvailableRooms = []
+  rooms.forEach(room => {
+    if (room.occupancyPercentage(startDate, endDate) === 0) {
+      arrAvailableRooms.push(room)
     }
-    return arrayAvailableRooms.length > 0 ? arrayAvailableRooms : "Total occupied rooms"
-   
-
-  
-
+  })
+  return arrAvailableRooms.length > 0 ? arrAvailableRooms : false
 }
 
 

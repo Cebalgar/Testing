@@ -21,8 +21,8 @@ const bookingTemplate1 = {
 const bookingTemplate2 = {
     name: "Luis",
     email: "luis@luis.com",
-    checkIn: new Date(2022, 12, 1),
-    checkOut: new Date(2022, 12, 5),
+    checkIn: new Date(2022, 12, 20),
+    checkOut: new Date(2022, 12, 27),
     discount: 20,
     room:{},
 
@@ -30,57 +30,139 @@ const bookingTemplate2 = {
 const bookingTemplate3={
     name: "Ana",
     email: "ana@ana.com",
-    checkIn: new Date(2022, 12, 25),
-    checkOut: new Date(2022, 12, 30),
+    checkIn: new Date(2022, 11, 23),
+    checkOut: new Date(2022, 11, 30),
     discount: 10,
     room:{}, 
 }
-    
+const bookingTemplate4={
+    name: "Pedro",
+    email: "pedro@pedro.com",
+    checkIn: new Date(2022, 11, 1),
+    checkOut: new Date(2022, 11, 3),
+    discount: 30,
+    room:{}, 
+}
+describe('Prueba - isOccupied', () => {
 
-test("Room is occupied on date", ()=> {
-  
-    const booking1 = new Booking({ ...bookingTemplate1 })
-    const room1 = new Room({ ...roomTemplate, bookings: [booking1]})
-    expect(room1.isOccupied(new Date(2022, 12, 4))).toBe(true);
-});
-test("Room is not occupied on date", ()=>{
-    
-    const booking1 = new Booking({...bookingTemplate1});
-    const room1 = new Room({...roomTemplate, bookings:[booking1]});
-    expect(room1.isOccupied(new Date(2022, 12, 15))).toBe(false);
+        test("Room is occupied on date", () => {
+        
+            const booking1 = new Booking({ ...bookingTemplate1 })
+            const room1 = new Room({ ...roomTemplate, bookings: [booking1]})
+            expect(room1.isOccupied(new Date(2022, 12, 4))).toBe(true);
+        });
+        test("Room is not occupied on date", () => {
+            
+            const booking1 = new Booking({...bookingTemplate1});
+            const room1 = new Room({...roomTemplate, bookings:[booking1]});
+            expect(room1.isOccupied(new Date(2022, 12, 15))).toBe(false);
+        })
+        test("Two bookings, the room is not occupied on date", () => {
+          
+            const booking1 = new Booking({...bookingTemplate1});
+            const booking2 = new Booking({...bookingTemplate2});
+            const room1 = new Room({...roomTemplate, bookings:[booking1,booking2]});
+            expect (room1.isOccupied(new Date(2022, 12, 23))).toBe(false);
+           
+        })
+        test("Two bookings, the room is occupied on date", () => {
+          
+            const booking1 = new Booking({...bookingTemplate1});
+            const booking2 = new Booking({...bookingTemplate2});
+            const room1 = new Room({...roomTemplate, bookings:[booking1,booking2]});
+            expect (room1.isOccupied(new Date(2022, 12, 8))).toBe(true);
+           
+        })
 })
 
-test("occupancyPercentage", () => {
-    const booking1 = new Booking({...bookingTemplate1});
-    const booking2 = new Booking({...bookingTemplate2});
-    const room1 = new Room({...roomTemplate, bookings:[booking1, booking2]});
- 
-    expect(room1.occupancyPercentage(new Date(2022, 12, 11), new Date(2022, 12, 20))).toBe(0);
+
+ describe('Prueba - occupancyPercentage', () => {
+        test("occupancyPercentage es 0", () => {
+            const booking1 = new Booking({...bookingTemplate1});
+            const room1 = new Room({...roomTemplate, bookings:[booking1]});
+        
+            expect(room1.occupancyPercentage(new Date(2022, 12, 11), new Date(2022, 12, 15))).toBe(0);
+        })
+        test("occupancyPercentage es 100%", () => {
+            const booking2 = new Booking({...bookingTemplate2});
+            const room1 = new Room({...roomTemplate, bookings:[booking2]});
+        
+            expect(room1.occupancyPercentage(new Date(2022, 12, 20), new Date(2022, 12, 24))).toBe(100);
+        })
+      test("occupancyPercentage es 100%", () => {
+        const booking2 = new Booking({...bookingTemplate2});
+        const room1 = new Room({...roomTemplate, bookings:[booking2]});
+    
+        expect(room1.occupancyPercentage(new Date(2022, 12, 25), new Date(2022, 12, 29))).toBe(50);
+        })
+      
+
+ })
+
+describe('Prueba - getFee', () => {
+        test("totalFee", () => {
+            const room1 = new Room({...roomTemplate})
+            const booking1 = new Booking({...bookingTemplate1, room: room1 });
+            room1.bookings=[booking1]
+            expect(booking1.getFee()).toBe(183000);
+        })
+        test("totalFee = 0", () => {
+            const room1 = new Room({...roomTemplate, discount:40});
+            const booking1 = new Booking({...bookingTemplate1, discount:60, room: room1 })
+            room1.bookings = [booking1];
+            expect(booking1.getFee()).toBe(0)
+        })
+        test("totalFee - The discount is greter than rate", () => {
+            const room1 = new Room({...roomTemplate, discount:40});
+            const booking1 = new Booking({...bookingTemplate1, discount:70, room: room1 })
+            room1.bookings = [booking1];
+            expect(booking1.getFee()).toEqual('The discount is greter than rate')
+        })
+        test("totalFee is 50%", () => {
+            const room1 = new Room({...roomTemplate});
+            const booking4 = new Booking({...bookingTemplate4, room: room1});
+            expect(booking4.getFee()).toBe(152500);
+        })
 })
 
- test("totalFeee", () => {
-    const room1 = new Room({...roomTemplate})
-    const booking1 = new Booking({...bookingTemplate1, room: room1 });
-    room1.bookings=[booking1]
-    expect(booking1.getFee()).toBe(183000);
+describe('Prueba - totalOccupancyPercentage', () => {
+
+       test('Total Occupancy Percentage 33%', () => {
+        const booking1 = new Booking({ ...bookingTemplate1, checkin: new Date(2022, 12, 3), checkout: new Date(2022, 12, 14) });
+        const booking2 = new Booking({ ...bookingTemplate2, checkin: new Date(2022, 12, 12), checkout: new Date(2022, 12, 14)});
+        const booking3 = new Booking({ ...bookingTemplate3, checkin: new Date(2022, 12, 8), checkout: new Date(2022, 12, 14) });
+        const room1 = new Room({ ...roomTemplate, bookings: [booking1] });
+        const room2 = new Room({ ...roomTemplate, bookings: [booking2] });
+        const room3 = new Room({ ...roomTemplate, bookings: [booking3] });
+            const startDate = new Date(2022, 12 , 3);
+            const endDate = new Date(2022, 12, 7);
+        expect(totalOccupancyPercentage([room1, room2, room3], startDate, endDate)).toBe(33);
+       })
+       
+       test('Total Occupancy Percentage 50%', () => {
+        const booking1 = new Booking({ ...bookingTemplate1 });
+        const booking2 = new Booking({ ...bookingTemplate2, checkin: new Date(2022, 12, 7), checkout: new Date(2022, 12, 15)});
+        const room1 = new Room({ ...roomTemplate, bookings: [booking1] });
+        const room2 = new Room({ ...roomTemplate, bookings: [booking2] });
+            const startDate = new Date(2022, 12, 8);
+            const endDate = new Date(2022, 12, 9);
+        expect(totalOccupancyPercentage([room1, room2], startDate, endDate)).toBe(50);
+   })
  })
 
- test('return totalOccupancyPercentage', () => {
-   const booking1 = new Booking({})
-   const booking2 = new Booking({})
-   const booking3 = new Booking({})
-   const room1 = new Room ({})
-   const room2= new Room({})
-    expect(totalOccupancyPercentage(rooms, new Date(''), new Date(''))).toBe();
- })
-
- test('Available Rooms', () => {
-   const booking1 = new Booking({})
-   const booking2 = new Booking({})
-   const booking3 = new Booking({})
-   const room1 = new Room ({})
-   const room2= new Room({})
-   expect(availableRooms(rooms, new Date(''), new Date(''))). toBe();
-
- })
+describe('Prueba - availableRooms', () => {
+    test('Available Rooms ', () => {
+            const booking1 = new Booking({ ...bookingTemplate1, checkin: new Date(2022, 12, 3), checkout: new Date(2022, 12, 14) });
+            const booking2 = new Booking({ ...bookingTemplate2, checkin: new Date(2022, 12, 12), checkout: new Date(2022, 12, 14)});
+            const booking3 = new Booking({ ...bookingTemplate3, checkin: new Date(2022, 12, 8), checkout: new Date(2022, 12, 14) });
+            const room1 = new Room({ ...roomTemplate, bookings: [booking1] });
+            const room2 = new Room({ ...roomTemplate, bookings: [booking2] });
+            const room3 = new Room({ ...roomTemplate, bookings: [booking3] });
+                const startDate = new Date(2022, 12 , 4);
+                const endDate = new Date(2022, 12, 7);
+                expect(availableRooms([room1, room2, room3], startDate, endDate)).toStrictEqual([room2,room3]);
+    })
+               
+        
+})
 
