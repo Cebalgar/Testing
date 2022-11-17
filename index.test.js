@@ -38,8 +38,8 @@ const bookingTemplate3={
 const bookingTemplate4={
     name: "Pedro",
     email: "pedro@pedro.com",
-    checkIn: new Date(2022, 11, 1),
-    checkOut: new Date(2022, 11, 3),
+    checkIn: new Date(2022, 11, 4),
+    checkOut: new Date(2022, 11, 6),
     discount: 30,
     room:{}, 
 }
@@ -89,11 +89,11 @@ describe('Prueba - isOccupied', () => {
         
             expect(room1.occupancyPercentage(new Date(2022, 12, 20), new Date(2022, 12, 24))).toBe(100);
         })
-      test("occupancyPercentage es 100%", () => {
-        const booking2 = new Booking({...bookingTemplate2});
-        const room1 = new Room({...roomTemplate, bookings:[booking2]});
+      test("occupancyPercentage es 50%", () => {
+        const booking4 = new Booking({...bookingTemplate4});
+        const room1 = new Room({...roomTemplate, bookings:[booking4]});
     
-        expect(room1.occupancyPercentage(new Date(2022, 12, 25), new Date(2022, 12, 29))).toBe(50);
+        expect(room1.occupancyPercentage(new Date(2022, 11, 4), new Date(2022, 11, 5))).toBe(50);
         })
       
 
