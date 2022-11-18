@@ -93,7 +93,7 @@ describe('Prueba - isOccupied', () => {
         const booking4 = new Booking({...bookingTemplate4});
         const room1 = new Room({...roomTemplate, bookings:[booking4]});
     
-        expect(room1.occupancyPercentage(new Date(2022, 11, 4), new Date(2022, 11, 5))).toBe(50);
+        expect(room1.occupancyPercentage(new Date(2022, 11, 3), new Date(2022, 11, 6))).toBe(50);
         })
       
 

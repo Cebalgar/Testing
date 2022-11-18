@@ -38,19 +38,21 @@ class Room {
 
     const dates = this.dateArray(startDate, endDate);
 
-    const occupedDaysBooking = [];
+    let daysOccupied = [];
+    let daysOff = [];
     for (let date of dates) {
-      if (this.isOccupied(date) === true) {
-        occupedDaysBooking.push(date);
-      } else {
-        return 0;
-      }
+      this.isOccupied(date)
+        ? daysOccupied.push("+1 occupied")
+        : daysOff.push("+1 off");
     }
-    //el total de días de ocupación * 100 entre el total de días entre las dos fechas
-    const percentageDays = (occupedDaysBooking.lenght / dates.lenght) * 100;
-    return percentageDays < 100 ? percentageDays : 100;
+    let totalDaysOcuppied = daysOccupied.length;
+    let totalDaysOff = daysOff.length;
+    let totalDays = totalDaysOcuppied + totalDaysOff;
+    let result = (totalDaysOcuppied * 100) / totalDays;
+    return Math.round(result);
   }
 }
+
 
 class Booking {
   constructor({ name, email, checkIn, checkOut, discount, room }) {
